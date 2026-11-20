@@ -3,53 +3,85 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Bellefair&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300&text=STYLINGWHDEP&display=swap">
+<link rel="preload" as="image" href="assets/regina-room.jpg">
 <style>
 :root{
-  /* Layout: one narrow fitting-room column; a tailor's tape measure across the top is the only loud element */
-  --bg:#F6F2F4;
-  --surface:#FFFFFF;
-  --ink:#261B25;
-  --muted:#6F6271;
-  --line:#E2D7DE;
-  --accent:#7B2C4C;
-  --on-accent:#FFFFFF;
-  --accent-soft:#F4E5EB;
-  --tape:#E6C55E;
-  --tape-dim:#EFE6CB;
-  --tape-ink:#3B2D10;
-  --tick-dim:#B7A77A;
-  --err:#A5233B;
-  --edge:rgba(0,0,0,.16);
+  /* Layout: Regina's sunlit room fixed behind a linen veil; centred brand masthead over one narrow column; a champagne tape measure tracks progress */
+  --bg:#EEE7DD;
+  --veil-edge:rgba(240,234,225,.44);
+  --veil-core:rgba(240,234,225,.76);
+  --veil-solid:rgba(240,234,225,.85);
+  --surface:rgba(255,251,245,.72);
+  --surface-strong:rgba(255,251,245,.9);
+  --ink:#2F2620;
+  --muted:#6B5E51;
+  --line:rgba(47,38,32,.17);
+  --accent:#7A5A3E;
+  --on-accent:#FFF9F1;
+  --accent-soft:rgba(122,90,62,.13);
+  --logo:#342A22;
+  --show-ink:block;
+  --show-cream:none;
+  --tape:#D9C29C;
+  --tape-dim:rgba(217,194,156,.42);
+  --tape-ink:#3E3226;
+  --tick-dim:rgba(62,50,38,.4);
+  --err:#9C2F28;
+  --edge:rgba(0,0,0,.14);
   --display:'Bellefair','Frank Ruhl Libre','Times New Roman',serif;
   --body:'Assistant','Heebo','Arial Hebrew',Arial,system-ui,sans-serif;
+  --brand:'Jost','Futura','Century Gothic','Avenir Next',sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#171218; --surface:#211A23; --ink:#F3EBF1; --muted:#A99DAB; --line:#3B303E;
-    --accent:#E4A7C0; --on-accent:#1C1219; --accent-soft:#3A2432;
-    --tape:#D4B556; --tape-dim:#3A3324; --tape-ink:#20180A; --tick-dim:#776B49;
-    --err:#F2909F; --edge:rgba(255,255,255,.22);
+    --bg:#1B1713; --veil-edge:rgba(24,20,16,.42); --veil-core:rgba(24,20,16,.74); --veil-solid:rgba(24,20,16,.82);
+    --surface:rgba(44,37,31,.62); --surface-strong:rgba(44,37,31,.88);
+    --ink:#F1E8DC; --muted:#BBAE9E; --line:rgba(241,232,220,.17);
+    --accent:#D9BF96; --on-accent:#231C15; --accent-soft:rgba(217,191,150,.16);
+    --logo:#F0E7DA; --show-ink:none; --show-cream:block;
+    --tape:#CDB48A; --tape-dim:rgba(205,180,138,.26); --tape-ink:#2A2118; --tick-dim:rgba(241,232,220,.42);
+    --err:#F0A08F; --edge:rgba(255,255,255,.2);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#171218; --surface:#211A23; --ink:#F3EBF1; --muted:#A99DAB; --line:#3B303E;
-  --accent:#E4A7C0; --on-accent:#1C1219; --accent-soft:#3A2432;
-  --tape:#D4B556; --tape-dim:#3A3324; --tape-ink:#20180A; --tick-dim:#776B49;
-  --err:#F2909F; --edge:rgba(255,255,255,.22);
+  --bg:#1B1713; --veil-edge:rgba(24,20,16,.42); --veil-core:rgba(24,20,16,.74); --veil-solid:rgba(24,20,16,.82);
+  --surface:rgba(44,37,31,.62); --surface-strong:rgba(44,37,31,.88);
+  --ink:#F1E8DC; --muted:#BBAE9E; --line:rgba(241,232,220,.17);
+  --accent:#D9BF96; --on-accent:#231C15; --accent-soft:rgba(217,191,150,.16);
+  --logo:#F0E7DA; --show-ink:none; --show-cream:block;
+  --tape:#CDB48A; --tape-dim:rgba(205,180,138,.26); --tape-ink:#2A2118; --tick-dim:rgba(241,232,220,.42);
+  --err:#F0A08F; --edge:rgba(255,255,255,.2);
   color-scheme:dark;
 }
 
 *,*::before,*::after{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
-.app{max-width:700px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 72px}
+.app{position:relative;z-index:1;max-width:700px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:clamp(28px,6vw,48px) 72px;--logo-w:clamp(150px,34vw,196px)}
+.app[data-view="welcome"]{--logo-w:clamp(220px,58vw,330px)}
+
+/* the room behind everything, faded under a linen veil */
+.backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;--bg-pos:50% 50%}
+.backdrop::before{content:"";position:absolute;inset:0;background:url("assets/regina-room.jpg") var(--bg-pos)/cover no-repeat;animation:room-in 2.4s cubic-bezier(.2,.6,.2,1) both}
+.backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--veil-edge) 0%,var(--veil-core) 30%,var(--veil-core) 70%,var(--veil-edge) 100%)}
+@keyframes room-in{from{opacity:0;transform:scale(1.05)}to{opacity:1;transform:none}}
+@media (max-width:700px){
+  .backdrop{--bg-pos:14% 50%}
+  .backdrop::after{background:linear-gradient(180deg,var(--veil-core) 0%,var(--veil-solid) 40%)}
+}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 button{font:inherit}
 
-/* header + tape measure */
-.top{display:grid;gap:10px;margin-bottom:clamp(28px,6vw,52px)}
-.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.mark{font-family:var(--display);font-size:1.2rem;letter-spacing:.02em}
+/* masthead + tape measure */
+.top{display:grid;gap:10px;margin-bottom:clamp(26px,5vw,44px)}
+.brand{justify-self:center;display:grid;gap:calc(var(--logo-w) * .054);width:var(--logo-w);margin-bottom:clamp(14px,3vw,26px);transition:width .5s cubic-bezier(.3,.7,.2,1)}
+.logo{width:100%;height:auto;aspect-ratio:562/282}
+.logo-ink{display:var(--show-ink)}
+.logo-cream{display:var(--show-cream)}
+.tagline{direction:ltr;display:flex;align-items:center;gap:calc(var(--logo-w) * .055);margin:0 calc(var(--logo-w) * -.13);font-family:var(--brand);font-weight:300;font-size:max(9px,calc(var(--logo-w) * .041));letter-spacing:.45em;line-height:1;color:var(--logo);white-space:nowrap}
+.tagline::before,.tagline::after{content:"";flex:1;height:1px;background:currentColor;opacity:.5}
+.tagline span{margin-right:-.45em}
 .count{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .tape{position:relative;height:24px;border-radius:3px;overflow:hidden;box-shadow:0 1px 0 var(--edge)}
 .tape-base,.tape-on{position:absolute;inset:0;background-repeat:no-repeat;background-position:top right;
@@ -112,7 +144,7 @@ h2:focus{outline:none}
 .line::placeholder{color:var(--muted);opacity:.5}
 .line:focus{outline:none;border-bottom-color:var(--accent)}
 .line.sm{font-size:1.35rem}
-.box{width:100%;font:inherit;font-size:1.05rem;line-height:1.6;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;resize:vertical;min-height:140px}
+.box{width:100%;font:inherit;font-size:1.05rem;line-height:1.6;color:var(--ink);background:var(--surface-strong);border:1px solid var(--line);border-radius:14px;padding:14px 16px;resize:vertical;min-height:140px}
 .box::placeholder{color:var(--muted);opacity:.7}
 .box:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .unit{display:flex;align-items:baseline;gap:12px;max-width:240px}
@@ -128,7 +160,7 @@ h2:focus{outline:none}
 .opt:hover{border-color:var(--muted)}
 .ring{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--muted);flex:none;display:grid;place-items:center}
 .ring::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);transform:scale(0);transition:transform .2s}
-.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:linear-gradient(var(--accent-soft),var(--accent-soft)),var(--surface-strong)}
 .opt[aria-pressed="true"] .ring{border-color:var(--accent)}
 .opt[aria-pressed="true"] .ring::after{transform:scale(1)}
 
@@ -148,7 +180,7 @@ h2:focus{outline:none}
 .pal span{flex:1}
 .card b{font-family:var(--display);font-weight:400;font-size:1.45rem;line-height:1.1}
 .card small{font-size:.86rem;color:var(--muted);line-height:1.45}
-.card[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);outline:1.5px dashed var(--accent);outline-offset:-7px}
+.card[aria-pressed="true"]{border-color:var(--accent);background:linear-gradient(var(--accent-soft),var(--accent-soft)),var(--surface-strong);outline:1.5px dashed var(--accent);outline-offset:-7px}
 .card .tick{position:absolute;top:19px;inset-inline-end:19px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:.8rem;transform:scale(0);transition:transform .2s}
 .card[aria-pressed="true"] .tick{transform:scale(1)}
 
@@ -170,7 +202,7 @@ h2:focus{outline:none}
 .scale-ends{display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted);margin-top:-4px}
 
 /* summary */
-.send{position:relative;display:grid;gap:14px;padding:26px 24px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.send{position:relative;display:grid;gap:14px;padding:26px 24px;border-radius:20px;background:var(--surface);border:1px solid var(--line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .send::before{content:"";position:absolute;inset:7px;border:1.5px dashed var(--line);border-radius:14px;pointer-events:none}
 .send-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .wa{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:700;font-size:1.1rem;padding:15px 28px;border-radius:999px;background:var(--ink);color:var(--bg);transition:background .2s,color .2s}
@@ -200,17 +232,20 @@ h2:focus{outline:none}
   .wa{width:100%}
 }
 @media (prefers-reduced-motion:reduce){
-  .enter{animation:none}
-  .tape-on,.card,.dot,.ring::after,.tick{transition:none}
+  .enter,.backdrop::before{animation:none}
+  .tape-on,.card,.dot,.ring::after,.tick,.brand{transition:none}
 }
 </style>
 
-<div class="app" dir="rtl" lang="he">
+<div class="backdrop" aria-hidden="true"></div>
+<div class="app" id="app" dir="rtl" lang="he" data-view="welcome">
   <header class="top">
-    <div class="top-row">
-      <span class="mark">שאלון סטיילינג אישי</span>
-      <span class="count" id="count"></span>
+    <div class="brand" role="img" aria-label="Regina · Styling with depth">
+      <img class="logo logo-ink" src="assets/regina-logo-ink.png" alt="" width="562" height="282">
+      <img class="logo logo-cream" src="assets/regina-logo-cream.png" alt="" width="562" height="282">
+      <p class="tagline" aria-hidden="true"><span>STYLING WITH DEPTH</span></p>
     </div>
+    <span class="count" id="count"></span>
     <div class="tape" id="tape" role="progressbar" aria-label="התקדמות בשאלון" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
       <div class="tape-base"></div>
       <div class="tape-on" id="tapeOn"></div>
@@ -269,7 +304,7 @@ const STYLES = [
 
 const Q = [
   {id:'name', s:'intro', type:'text', label:'שם', lead:'נתחיל בהיכרות קצרה.', q:'איך קוראים לכם?', ph:'שם מלא', ac:'name', required:true, err:'נשמח לדעת איך לפנות אליכם.'},
-  {id:'age', s:'intro', type:'single', label:'גיל', lead:'הגיל עוזר לנו להבין באיזה שלב בחיים אתם נמצאים.', q:'באיזה טווח גיל אתם?', o:['עד 25','26–35','36–45','46–55','56 ומעלה']},
+  {id:'age', s:'intro', type:'single', label:'גיל', lead:'הגיל עוזר לנו להבין באיזה שלב בחיים אתם נמצאים.', q:'באיזה טווח גיל אתם?', o:['עד 25','26-35','36-45','46-55','56 ומעלה']},
   {id:'work', s:'intro', type:'single', label:'קוד לבוש בעבודה', lead:'רוב השבוע עובר בעבודה, אז נתחיל משם.', q:'מה קוד הלבוש בעבודה שלכם?', o:['רשמי ומחויט','עסקי־קז׳ואל','חופשי לגמרי','מדים או בגדי עבודה','עבודה מהבית','לא עובדים כרגע'], extra:'במה אתם עוסקים? (לא חובה)', xl:'עיסוק'},
   {id:'week', s:'intro', type:'multi', label:'מה ממלא את השבוע', lead:'הבגדים צריכים להתאים לחיים האמיתיים שלכם.', q:'מה ממלא את השבוע שלכם?', o:['עבודה במשרד','עבודה מהבית','פגישות עם לקוחות','הורות וסידורים','ספורט ואימונים','יציאות בערב','אירועים ושמחות','נסיעות וטיולים'], extra:'משהו נוסף?', xl:'עוד'},
 
@@ -294,7 +329,7 @@ const Q = [
   {id:'shoes', s:'closet', type:'multi', label:'נעליים', lead:'הנעליים קובעות איך הלוק מרגיש בסוף היום.', q:'באילו נעליים אתם חיים?', o:['סניקרס','נעליים שטוחות','לואפרס','סנדלים','מגפיים','עקב נמוך','עקב גבוה','נעליים מחויטות']},
 
   {id:'where', s:'shop', type:'multi', label:'איפה קונים', lead:'כדי שההמלצות יהיו נגישות לכם.', q:'איפה אתם קונים בדרך כלל?', o:['רשתות אופנה','מעצבים מקומיים','אתרים בחו״ל','יד שנייה ווינטג׳','קניונים ואאוטלטים','בנסיעות לחו״ל']},
-  {id:'budget', s:'shop', type:'single', label:'תקציב לפריט', lead:'תקציב ברור חוסך זמן לשני הצדדים.', q:'מה התקציב הנוח לכם לפריט בודד?', o:['עד ₪150','₪150–350','₪350–700','₪700–1,500','מעל ₪1,500','תלוי בפריט']},
+  {id:'budget', s:'shop', type:'single', label:'תקציב לפריט', lead:'תקציב ברור חוסך זמן לשני הצדדים.', q:'מה התקציב הנוח לכם לפריט בודד?', o:['עד ₪150','₪150-350','₪350-700','₪700-1,500','מעל ₪1,500','תלוי בפריט']},
 
   {id:'goals', s:'goals', type:'multi', label:'מה רוצים מהתהליך', lead:'כמעט סיימנו. עכשיו לחלק החשוב.', q:'מה הייתם רוצים לקבל מהתהליך?', o:['סידור ומיון הארון','ליווי בקניות','בניית מלתחת בסיס','לוק לאירוע מיוחד','שינוי תדמית','התאמה לתפקיד או לשלב חדש','ללמוד לשלב לבד']},
   {id:'event', s:'goals', type:'text', label:'אירוע או תאריך', lead:'אם יש תאריך יעד, נבנה את הלו״ז סביבו.', q:'יש אירוע או תאריך שאנחנו מכוונים אליו?', ph:'למשל: חתונה ב־12 בדצמבר'},
@@ -376,9 +411,8 @@ function welcomeHTML(){
     <p class="eyebrow">שאלון היכרות · סטיילינג אישי</p>
     <h1>בואו נכיר את <em>הסגנון</em> שלכם</h1>
     <p class="sub">${Q.length} שאלות קצרות על אורח החיים, הגוף, הצבעים והארון שלכם. רוב השאלות הן בחירה בלחיצה, וכמעט הכול לא חובה. בסוף שולחים את התשובות בוואטסאפ.</p>
-    <ol class="chapters">${chapters}</ol>
-    <div class="actions">${actions}</div>
-    <p class="fine">בערך 7 דקות · התשובות נשמרות בדפדפן הזה עד השליחה</p>`;
+    <div class="actions">${actions}<span class="fine">בערך 7 דקות · התשובות נשמרות בדפדפן הזה עד השליחה</span></div>
+    <ol class="chapters">${chapters}</ol>`;
 }
 
 function fieldHTML(q){
@@ -492,6 +526,7 @@ function render(anim = true){
   else if (S.i >= Q.length) html = summaryHTML();
   else html = questionHTML(Q[S.i]);
   stage.innerHTML = `<div class="screen${anim ? ' enter' : ''}">${html}</div>`;
+  $('#app').dataset.view = S.i < 0 ? 'welcome' : S.i >= Q.length ? 'summary' : 'question';
   updateTop();
   if (S.i >= 0 && S.i < Q.length){ refreshQ(); focusQ(anim); }
   save();
