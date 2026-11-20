@@ -1,0 +1,635 @@
+<title>שאלון סטיילינג אישי</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Bellefair&display=swap">
+<style>
+:root{
+  /* Layout: one narrow fitting-room column; a tailor's tape measure across the top is the only loud element */
+  --bg:#F6F2F4;
+  --surface:#FFFFFF;
+  --ink:#261B25;
+  --muted:#6F6271;
+  --line:#E2D7DE;
+  --accent:#7B2C4C;
+  --on-accent:#FFFFFF;
+  --accent-soft:#F4E5EB;
+  --tape:#E6C55E;
+  --tape-dim:#EFE6CB;
+  --tape-ink:#3B2D10;
+  --tick-dim:#B7A77A;
+  --err:#A5233B;
+  --edge:rgba(0,0,0,.16);
+  --display:'Bellefair','Frank Ruhl Libre','Times New Roman',serif;
+  --body:'Assistant','Heebo','Arial Hebrew',Arial,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#171218; --surface:#211A23; --ink:#F3EBF1; --muted:#A99DAB; --line:#3B303E;
+    --accent:#E4A7C0; --on-accent:#1C1219; --accent-soft:#3A2432;
+    --tape:#D4B556; --tape-dim:#3A3324; --tape-ink:#20180A; --tick-dim:#776B49;
+    --err:#F2909F; --edge:rgba(255,255,255,.22);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#171218; --surface:#211A23; --ink:#F3EBF1; --muted:#A99DAB; --line:#3B303E;
+  --accent:#E4A7C0; --on-accent:#1C1219; --accent-soft:#3A2432;
+  --tape:#D4B556; --tape-dim:#3A3324; --tape-ink:#20180A; --tick-dim:#776B49;
+  --err:#F2909F; --edge:rgba(255,255,255,.22);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.app{max-width:700px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 72px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button{font:inherit}
+
+/* header + tape measure */
+.top{display:grid;gap:10px;margin-bottom:clamp(28px,6vw,52px)}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.mark{font-family:var(--display);font-size:1.2rem;letter-spacing:.02em}
+.count{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tape{position:relative;height:24px;border-radius:3px;overflow:hidden;box-shadow:0 1px 0 var(--edge)}
+.tape-base,.tape-on{position:absolute;inset:0;background-repeat:no-repeat;background-position:top right;
+  background-image:
+    repeating-linear-gradient(to left,var(--tk) 0 1.5px,transparent 1.5px 20%),
+    repeating-linear-gradient(to left,var(--tk) 0 1px,transparent 1px 4%),
+    repeating-linear-gradient(to left,var(--tk) 0 1px,transparent 1px 2%);
+  background-size:100% 72%,100% 44%,100% 24%}
+.tape-base{background-color:var(--tape-dim);--tk:var(--tick-dim)}
+.tape-on{background-color:var(--tape);--tk:var(--tape-ink);clip-path:inset(0 0 0 100%);transition:clip-path .6s cubic-bezier(.3,.7,.2,1)}
+.tape-nums{position:relative;height:1.2em;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tape-nums span{position:absolute;top:0;transform:translateX(50%)}
+.tape-nums span:first-child{transform:none}
+.tape-nums span:last-child{transform:translateX(100%)}
+
+/* screens */
+.screen{display:grid;gap:22px}
+.enter{animation:rise .42s cubic-bezier(.2,.7,.2,1)}
+@keyframes rise{from{opacity:.3;transform:translateY(10px)}to{opacity:1;transform:none}}
+.eyebrow{margin:0;font-size:.85rem;letter-spacing:.05em;color:var(--accent);font-weight:600}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.12;text-wrap:balance}
+h1{font-size:clamp(2.5rem,8vw,3.8rem)}
+h1 em{font-style:normal;color:var(--accent)}
+h2{font-size:clamp(1.9rem,6vw,2.7rem)}
+h2:focus{outline:none}
+.sub{margin:0;font-size:1.1rem;color:var(--muted);max-width:34em}
+.fine{margin:0;font-size:.85rem;color:var(--muted)}
+
+/* welcome */
+.chapters{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));column-gap:28px;border-top:1px solid var(--line)}
+.chapters li{display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line)}
+.chapters .n{font-family:var(--display);font-size:1.3rem;color:var(--accent);min-width:1.1em}
+.chapters .c{margin-inline-start:auto;font-size:.82rem;color:var(--muted);white-space:nowrap}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* buttons */
+.btn{font-size:1rem;font-weight:600;border-radius:999px;padding:12px 28px;cursor:pointer;border:1px solid transparent;transition:background .2s,color .2s,border-color .2s,transform .1s}
+.btn:active{transform:translateY(1px)}
+.primary{background:var(--ink);color:var(--bg)}
+.primary:hover{background:var(--accent);color:var(--on-accent)}
+.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.ghost:hover{border-color:var(--ink)}
+.link{background:none;border:0;color:var(--muted);font-size:.95rem;cursor:pointer;padding:8px 4px;text-decoration:underline;text-underline-offset:4px}
+.link:hover{color:var(--ink)}
+
+/* question */
+.q-meta{display:flex;align-items:center;gap:12px;font-size:.85rem;color:var(--muted);letter-spacing:.03em}
+.q-meta::after{content:"";flex:1;border-top:1px dashed var(--line)}
+.q-meta b{color:var(--accent);font-weight:600}
+.lead{margin:0 0 -8px;color:var(--muted);font-size:1.05rem;display:flex;gap:12px;align-items:baseline}
+.lead::before{content:"";width:24px;height:1px;background:var(--accent);flex:none;transform:translateY(-5px)}
+.hint{margin:-8px 0 0;font-size:.92rem;color:var(--muted);transition:color .2s}
+.hint.warn{color:var(--err)}
+.field{display:grid;gap:14px;margin-top:4px}
+.err{margin:0;color:var(--err);font-size:.95rem}
+.q-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px;padding-top:20px;border-top:1px solid var(--line)}
+
+/* text inputs */
+.line{width:100%;font-family:var(--display);font-size:clamp(1.6rem,5vw,2rem);color:var(--ink);background:transparent;border:0;border-bottom:1.5px solid var(--line);border-radius:0;padding:6px 2px 10px;transition:border-color .2s}
+.line::placeholder{color:var(--muted);opacity:.5}
+.line:focus{outline:none;border-bottom-color:var(--accent)}
+.line.sm{font-size:1.35rem}
+.box{width:100%;font:inherit;font-size:1.05rem;line-height:1.6;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;resize:vertical;min-height:140px}
+.box::placeholder{color:var(--muted);opacity:.7}
+.box:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.unit{display:flex;align-items:baseline;gap:12px;max-width:240px}
+.unit span{color:var(--muted);font-size:1.1rem}
+.sizes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.size{display:grid;gap:2px}
+.size span,.extra span{font-size:.88rem;color:var(--muted)}
+.extra{display:grid;gap:2px;margin-top:6px}
+
+/* single choice rows */
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:start;font-size:1.05rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;cursor:pointer;transition:border-color .2s,background .2s}
+.opt:hover{border-color:var(--muted)}
+.ring{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--muted);flex:none;display:grid;place-items:center}
+.ring::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);transform:scale(0);transition:transform .2s}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt[aria-pressed="true"] .ring{border-color:var(--accent)}
+.opt[aria-pressed="true"] .ring::after{transform:scale(1)}
+
+/* multi choice chips */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:1rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 18px;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.chip::before{content:"+";color:var(--muted);width:.8em;text-align:center}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chip[aria-pressed="true"]::before{content:"✓";color:inherit}
+
+/* style cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:12px}
+.card{position:relative;display:grid;gap:10px;align-content:start;text-align:start;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 12px 16px;cursor:pointer;transition:border-color .2s,transform .2s,background .2s}
+.card:hover{transform:translateY(-2px);border-color:var(--muted)}
+.pal{display:flex;height:58px;border-radius:10px;overflow:hidden;border:1px solid var(--edge)}
+.pal span{flex:1}
+.card b{font-family:var(--display);font-weight:400;font-size:1.45rem;line-height:1.1}
+.card small{font-size:.86rem;color:var(--muted);line-height:1.45}
+.card[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);outline:1.5px dashed var(--accent);outline-offset:-7px}
+.card .tick{position:absolute;top:19px;inset-inline-end:19px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:.8rem;transform:scale(0);transition:transform .2s}
+.card[aria-pressed="true"] .tick{transform:scale(1)}
+
+/* colour swatches */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:16px 8px}
+.sw{display:grid;justify-items:center;gap:6px;background:none;border:0;padding:4px 0;font-size:.84rem;color:var(--ink);cursor:pointer}
+.dot{position:relative;width:48px;height:48px;border-radius:50%;background:var(--c);border:1px solid var(--edge);outline:2px solid transparent;outline-offset:3px;transition:outline-color .2s,transform .2s}
+.sw:hover .dot{transform:scale(1.06)}
+.sw[aria-pressed="true"] .dot{outline-color:var(--accent)}
+.sw[aria-pressed="true"] .dot::after{content:"✓";position:absolute;top:-7px;inset-inline-end:-7px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:.7rem;display:grid;place-items:center}
+.sw:focus-visible{outline:none}
+.sw:focus-visible .dot{outline-color:var(--ink)}
+
+/* scale */
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.scale button{font-family:var(--display);font-size:1.6rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 0;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.scale button:hover{border-color:var(--muted)}
+.scale button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.scale-ends{display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted);margin-top:-4px}
+
+/* summary */
+.send{position:relative;display:grid;gap:14px;padding:26px 24px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.send::before{content:"";position:absolute;inset:7px;border:1.5px dashed var(--line);border-radius:14px;pointer-events:none}
+.send-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.wa{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:700;font-size:1.1rem;padding:15px 28px;border-radius:999px;background:var(--ink);color:var(--bg);transition:background .2s,color .2s}
+.wa:hover{background:var(--accent);color:var(--on-accent)}
+.wa svg{width:20px;height:20px;flex:none}
+.send-note{margin:0;font-size:.92rem;color:var(--muted)}
+.send-note bdi{color:var(--ink);font-variant-numeric:tabular-nums;user-select:all}
+#copybox{width:100%;min-height:180px;font:inherit;font-size:.86rem;line-height:1.5;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.ok{margin:0;font-size:.92rem;color:var(--accent);min-height:1.4em}
+.sum-sec{display:grid;gap:2px}
+.sum-sec h3{font-size:1.55rem;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.sum-sec dl{margin:0}
+.row{display:grid;grid-template-columns:minmax(0,10em) minmax(0,1fr) auto;gap:4px 16px;align-items:baseline;padding:10px 0;border-bottom:1px dashed var(--line)}
+.row dt{color:var(--muted);font-size:.9rem}
+.row dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.none{color:var(--muted);opacity:.7}
+.edit{background:none;border:0;color:var(--accent);font-size:.86rem;cursor:pointer;padding:2px 4px;text-decoration:underline;text-underline-offset:3px}
+.mini-c{display:inline-flex;align-items:center;gap:5px;margin-inline-end:12px;white-space:nowrap}
+.mini{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--c);border:1px solid var(--edge)}
+.end{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding-top:6px}
+
+@media (max-width:520px){
+  .sizes{grid-template-columns:1fr}
+  .row{grid-template-columns:minmax(0,1fr) auto}
+  .row dd{grid-column:1/-1;grid-row:2}
+  .send{padding:22px 18px}
+  .wa{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  .enter{animation:none}
+  .tape-on,.card,.dot,.ring::after,.tick{transition:none}
+}
+</style>
+
+<div class="app" dir="rtl" lang="he">
+  <header class="top">
+    <div class="top-row">
+      <span class="mark">שאלון סטיילינג אישי</span>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="tape" id="tape" role="progressbar" aria-label="התקדמות בשאלון" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
+      <div class="tape-base"></div>
+      <div class="tape-on" id="tapeOn"></div>
+    </div>
+    <div class="tape-nums" aria-hidden="true">
+      <span style="inset-inline-start:0%">0</span>
+      <span style="inset-inline-start:20%">5</span>
+      <span style="inset-inline-start:40%">10</span>
+      <span style="inset-inline-start:60%">15</span>
+      <span style="inset-inline-start:80%">20</span>
+      <span style="inset-inline-start:100%">25</span>
+    </div>
+  </header>
+  <main id="stage" aria-live="polite"></main>
+</div>
+
+<script>
+(function(){
+// מספר הוואטסאפ שאליו נשלחות התשובות, בפורמט בינלאומי בלי + ובלי 0 בהתחלה (למשל 972501234567).
+// אם ריק, וואטסאפ ייפתח עם ההודעה מוכנה וייתן לבחור למי לשלוח.
+const WHATSAPP_NUMBER = '';
+const STORE_KEY = 'styling-questionnaire-v1';
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const SECTIONS = [
+  {id:'intro',  t:'היכרות'},
+  {id:'body',   t:'גוף וגזרה'},
+  {id:'style',  t:'סגנון'},
+  {id:'color',  t:'צבעים'},
+  {id:'closet', t:'הארון'},
+  {id:'shop',   t:'קניות ותקציב'},
+  {id:'goals',  t:'מטרות'},
+];
+
+const COLORS = [
+  {n:'שחור',c:'#1C1C1C'},{n:'לבן',c:'#FFFFFF'},{n:'שמנת',c:'#F2EAD8'},{n:'בז׳',c:'#D8C3A5'},
+  {n:'קאמל',c:'#B8864E'},{n:'חום',c:'#6B4630'},{n:'אפור',c:'#9A9A9E'},{n:'נייבי',c:'#1F2A44'},
+  {n:'כחול',c:'#2F4FA8'},{n:'תכלת',c:'#A9C8E8'},{n:'טורקיז',c:'#2A9D9F'},{n:'מנטה',c:'#BFE3D0'},
+  {n:'ירוק זית',c:'#6E7442'},{n:'ירוק בקבוק',c:'#1E4D3A'},{n:'צהוב',c:'#F2D24B'},{n:'חרדל',c:'#C99A2E'},
+  {n:'כתום',c:'#E07B39'},{n:'אדום',c:'#C22E2E'},{n:'בורדו',c:'#6D1A2C'},{n:'ורוד עתיק',c:'#D7A3A6'},
+  {n:'פוקסיה',c:'#C2185B'},{n:'לילך',c:'#B9A3D1'},{n:'סגול',c:'#5B2E7A'},{n:'כסוף',c:'#C9CBD0'},
+];
+
+const STYLES = [
+  {n:'קלאסי',        d:'בלייזר, חולצה מכופתרת, מעיל טרנץ׳',       c:['#1F2A44','#F2EAD8','#B8864E']},
+  {n:'מינימליסטי',   d:'קווים נקיים, מונוכרום, בלי עומס',          c:['#1C1C1C','#FFFFFF','#9A9A9E']},
+  {n:'רומנטי',       d:'בדים זורמים, תחרה, פרחוני עדין',          c:['#D7A3A6','#F2EAD8','#B9A3D1']},
+  {n:'בוהו',         d:'בדים טבעיים, שכבות, הדפסים אתניים',       c:['#C99A2E','#6B4630','#6E7442']},
+  {n:'ספורטיבי',     d:'סניקרס, טרנינג מחויט, נוחות מעל הכול',    c:['#9A9A9E','#FFFFFF','#2F4FA8']},
+  {n:'אדג׳י / רוק',  d:'עור, מגפיים, ג׳ינס שחוק',                 c:['#1C1C1C','#6D1A2C','#8C8C90']},
+  {n:'אלגנטי',       d:'גזרות מחויטות, בדים איכותיים, פרטים קטנים', c:['#1C1C1C','#F2EAD8','#B08D57']},
+  {n:'אופנתי נועז',  d:'טרנדים, צבעים חזקים, פריט סטייטמנט',      c:['#C2185B','#E07B39','#2A9D9F']},
+];
+
+const Q = [
+  {id:'name', s:'intro', type:'text', label:'שם', lead:'נתחיל בהיכרות קצרה.', q:'איך קוראים לכם?', ph:'שם מלא', ac:'name', required:true, err:'נשמח לדעת איך לפנות אליכם.'},
+  {id:'age', s:'intro', type:'single', label:'גיל', lead:'הגיל עוזר לנו להבין באיזה שלב בחיים אתם נמצאים.', q:'באיזה טווח גיל אתם?', o:['עד 25','26–35','36–45','46–55','56 ומעלה']},
+  {id:'work', s:'intro', type:'single', label:'קוד לבוש בעבודה', lead:'רוב השבוע עובר בעבודה, אז נתחיל משם.', q:'מה קוד הלבוש בעבודה שלכם?', o:['רשמי ומחויט','עסקי־קז׳ואל','חופשי לגמרי','מדים או בגדי עבודה','עבודה מהבית','לא עובדים כרגע'], extra:'במה אתם עוסקים? (לא חובה)', xl:'עיסוק'},
+  {id:'week', s:'intro', type:'multi', label:'מה ממלא את השבוע', lead:'הבגדים צריכים להתאים לחיים האמיתיים שלכם.', q:'מה ממלא את השבוע שלכם?', o:['עבודה במשרד','עבודה מהבית','פגישות עם לקוחות','הורות וסידורים','ספורט ואימונים','יציאות בערב','אירועים ושמחות','נסיעות וטיולים'], extra:'משהו נוסף?', xl:'עוד'},
+
+  {id:'height', s:'body', type:'number', label:'גובה', lead:'המידות עוזרות לדייק גזרות ואורכים, והן נשארות רק אצלנו.', q:'מה הגובה שלכם?', ph:'165', unit:'ס״מ'},
+  {id:'sizes', s:'body', type:'sizes', label:'מידות', lead:'אין מידה נכונה או לא נכונה. יש מידה שמתאימה עכשיו.', q:'מה המידות שלכם בדרך כלל?', fields:[{k:'top',l:'חלק עליון',ph:'M או 38'},{k:'bottom',l:'מכנסיים',ph:'30 או 40'},{k:'shoes',l:'נעליים',ph:'39'}]},
+  {id:'highlight', s:'body', type:'multi', label:'אוהבים להבליט', lead:'נתחיל ממה שאתם אוהבים בעצמכם.', q:'מה הכי נעים לכם להבליט?', o:['כתפיים','זרועות','צוואר ועצמות הבריח','מותניים','גב','רגליים','ישבן','חזה','אין לי העדפה'], none:'אין לי העדפה'},
+  {id:'downplay', s:'body', type:'multi', label:'פחות להדגיש', lead:'ועכשיו מה שפחות, כדי שנדע איך לאזן.', q:'מה הייתם מעדיפים פחות להדגיש?', o:['כתפיים','זרועות','בטן','מותניים','ירכיים','ישבן','חזה','רגליים','הכול בסדר מבחינתי'], none:'הכול בסדר מבחינתי'},
+  {id:'fit', s:'body', type:'single', label:'גזרה מועדפת', lead:'הגזרה קובעת חצי מהמראה.', q:'איזו גזרה הכי נוחה לכם?', o:['צמודה ומחמיאה','מחויטת ומדויקת','רפויה ואוברסייז','שילוב של צמוד ורפוי','תלוי בפריט']},
+
+  {id:'styles', s:'style', type:'styles', label:'סגנונות', lead:'תבחרו לפי התחושה הראשונה, בלי לחשוב יותר מדי.', q:'אילו סגנונות מדברים אליכם?', max:3},
+  {id:'project', s:'style', type:'multi', label:'מה לשדר', lead:'בגדים הם שפה. מה תרצו שהיא תגיד עליכם?', q:'מה תרצו לשדר כשאתם נכנסים לחדר?', max:3, o:['ביטחון עצמי','מקצועיות','אלגנטיות','יצירתיות','חום ונגישות','עוצמה','קלילות','ייחודיות','רוגע']},
+  {id:'prints', s:'style', type:'single', label:'הדפסים', lead:'יש מי שחיים בהדפסים ויש מי שבורחים מהם.', q:'מה היחס שלכם להדפסים ודוגמאות?', o:['אוהבים הדפסים בולטים','רק הדפסים עדינים','פסים ומשבצות כן, פרחוני פחות','מעדיפים צבע אחיד','פתוחים לנסות']},
+  {id:'inspo', s:'style', type:'text', label:'השראה', lead:'דמות השראה עוזרת לנו להבין מהר את הכיוון.', q:'יש מישהו שהסגנון שלו מעורר בכם השראה?', ph:'שם, חשבון אינסטגרם או תיאור קצר'},
+
+  {id:'colorsLove', s:'color', type:'colors', label:'צבעים אהובים', lead:'צבע נכון ליד הפנים משנה את כל המראה.', q:'באילו צבעים אתם הכי אוהבים להתלבש?'},
+  {id:'colorsAvoid', s:'color', type:'colors', label:'צבעים שנמנעים מהם', lead:'ועכשיו הצבעים שנשארים על המדף.', q:'מאילו צבעים אתם נמנעים?'},
+  {id:'metal', s:'color', type:'single', label:'גוון תכשיטים', lead:'התכשיטים שמחמיאים לכם מספרים לנו הרבה על גוון העור.', q:'איזה גוון תכשיטים הכי מחמיא לכם?', o:['זהב','כסף','רוז גולד','שניהם עובדים לי','לא עונדים תכשיטים']},
+
+  {id:'pains', s:'closet', type:'multi', label:'מה מתסכל בארון', lead:'בואו נדבר בכנות על הארון.', q:'מה הכי מתסכל אתכם בארון היום?', o:['הרבה בגדים ואין מה ללבוש','הבגדים לא מתאימים לגוף של היום','לא יודעים איך לשלב','הכול נראה אותו דבר','חסרים פריטי בסיס','אין מה ללבוש לאירועים','קונים מתוך דחף ולא לובשים'], extra:'משהו אחר?', xl:'עוד'},
+  {id:'favorite', s:'closet', type:'area', label:'הפריט האהוב', lead:'הפריט האהוב מלמד אותנו הכי הרבה.', q:'מה הפריט שאתם הכי אוהבים בארון, ולמה?', ph:'למשל: ג׳קט ג׳ינס ישן, כי הוא מתאים לכל דבר'},
+  {id:'comfort', s:'closet', type:'scale', label:'נוחות מול סטייל', lead:'אין כאן תשובה נכונה.', q:'נוחות או סטייל, מה קודם אצלכם?', ends:['נוחות קודם','סטייל קודם'], words:['נוחות קודם','בעיקר נוחות','איזון','בעיקר סטייל','סטייל קודם']},
+  {id:'shoes', s:'closet', type:'multi', label:'נעליים', lead:'הנעליים קובעות איך הלוק מרגיש בסוף היום.', q:'באילו נעליים אתם חיים?', o:['סניקרס','נעליים שטוחות','לואפרס','סנדלים','מגפיים','עקב נמוך','עקב גבוה','נעליים מחויטות']},
+
+  {id:'where', s:'shop', type:'multi', label:'איפה קונים', lead:'כדי שההמלצות יהיו נגישות לכם.', q:'איפה אתם קונים בדרך כלל?', o:['רשתות אופנה','מעצבים מקומיים','אתרים בחו״ל','יד שנייה ווינטג׳','קניונים ואאוטלטים','בנסיעות לחו״ל']},
+  {id:'budget', s:'shop', type:'single', label:'תקציב לפריט', lead:'תקציב ברור חוסך זמן לשני הצדדים.', q:'מה התקציב הנוח לכם לפריט בודד?', o:['עד ₪150','₪150–350','₪350–700','₪700–1,500','מעל ₪1,500','תלוי בפריט']},
+
+  {id:'goals', s:'goals', type:'multi', label:'מה רוצים מהתהליך', lead:'כמעט סיימנו. עכשיו לחלק החשוב.', q:'מה הייתם רוצים לקבל מהתהליך?', o:['סידור ומיון הארון','ליווי בקניות','בניית מלתחת בסיס','לוק לאירוע מיוחד','שינוי תדמית','התאמה לתפקיד או לשלב חדש','ללמוד לשלב לבד']},
+  {id:'event', s:'goals', type:'text', label:'אירוע או תאריך', lead:'אם יש תאריך יעד, נבנה את הלו״ז סביבו.', q:'יש אירוע או תאריך שאנחנו מכוונים אליו?', ph:'למשל: חתונה ב־12 בדצמבר'},
+  {id:'notes', s:'goals', type:'area', label:'עוד משהו', lead:'כאן אפשר לכתוב כל מה שלא שאלנו.', q:'עוד משהו שחשוב לנו לדעת?', ph:'רגישות לבדים, דברים שלא תלבשו בשום מצב, חלומות...'},
+];
+
+const stage = $('#stage');
+let S = {i:-1, a:{}, back:false, far:0};
+let advT = 0;
+
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
+function secOf(q){ return SECTIONS.find(s => s.id === q.s); }
+function secNo(q){ return SECTIONS.findIndex(s => s.id === q.s) + 1; }
+function list(q){ return q.type === 'styles' ? STYLES.map(s => s.n) : q.type === 'colors' ? COLORS.map(c => c.n) : q.o; }
+function multiHint(q){ return q.max ? `אפשר לבחור עד ${q.max}` : 'אפשר לבחור כמה'; }
+
+function answered(q){
+  const v = S.a[q.id];
+  if (v == null) return false;
+  if (Array.isArray(v)) return v.length > 0;
+  if (typeof v === 'object') return Object.values(v).some(x => String(x || '').trim());
+  return String(v).trim() !== '';
+}
+function anyAnswer(){ return Q.some(answered); }
+
+/* ---------- answers as text ---------- */
+function answerText(q){
+  const v = S.a[q.id];
+  const x = String(S.a[q.id + '__x'] || '').trim();
+  let t = '';
+  if (answered(q)){
+    if (q.type === 'number') t = `${String(v).trim()} ${q.unit}`;
+    else if (q.type === 'sizes') t = q.fields.filter(f => String(v[f.k] || '').trim()).map(f => `${f.l} ${String(v[f.k]).trim()}`).join(' · ');
+    else if (q.type === 'scale') t = `${v} מתוך 5 (${q.words[v - 1]})`;
+    else if (Array.isArray(v)) t = v.join(', ');
+    else t = String(v).trim();
+  }
+  if (x) t = t ? `${t}. ${q.xl}: ${x}` : `${q.xl}: ${x}`;
+  return t;
+}
+function answerHTML(q){
+  const v = S.a[q.id];
+  if (q.type === 'colors' && Array.isArray(v) && v.length){
+    return v.map(n => { const c = COLORS.find(c => c.n === n); return `<span class="mini-c"><i class="mini" style="--c:${c ? c.c : 'transparent'}"></i>${esc(n)}</span>`; }).join('');
+  }
+  const t = answerText(q);
+  return t ? esc(t).replace(/\n/g, '<br>') : '';
+}
+function buildMessage(){
+  const name = String(S.a.name || '').trim();
+  const out = [`*שאלון סטיילינג אישי${name ? ' · ' + name : ''}*`, ''];
+  SECTIONS.forEach(sec => {
+    const rows = Q.filter(q => q.s === sec.id && q.id !== 'name').map(q => [q.label, answerText(q)]).filter(r => r[1]);
+    if (!rows.length) return;
+    out.push(`*${sec.t}*`);
+    rows.forEach(([l, v]) => out.push(`${l}: ${v}`));
+    out.push('');
+  });
+  return out.join('\n').trim();
+}
+function waURL(msg){
+  const n = WHATSAPP_NUMBER.replace(/\D/g, '');
+  return `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
+}
+
+/* ---------- screens ---------- */
+function welcomeHTML(){
+  const resumeAt = Math.min(S.far || 0, Q.length);
+  const draft = anyAnswer();
+  const chapters = SECTIONS.map((s, k) => {
+    const n = Q.filter(q => q.s === s.id).length;
+    return `<li><span class="n">${k + 1}</span><span>${s.t}</span><span class="c">${n} שאלות</span></li>`;
+  }).join('');
+  const actions = draft
+    ? `<button type="button" class="btn primary" data-act="resume">${resumeAt >= Q.length ? 'לסיכום התשובות ←' : `ממשיכים משאלה ${resumeAt + 1} ←`}</button>
+       <button type="button" class="link" data-act="restart">התחלה מחדש</button>`
+    : `<button type="button" class="btn primary" data-act="start">מתחילים ←</button>`;
+  return `
+    <p class="eyebrow">שאלון היכרות · סטיילינג אישי</p>
+    <h1>בואו נכיר את <em>הסגנון</em> שלכם</h1>
+    <p class="sub">${Q.length} שאלות קצרות על אורח החיים, הגוף, הצבעים והארון שלכם. רוב השאלות הן בחירה בלחיצה, וכמעט הכול לא חובה. בסוף שולחים את התשובות בוואטסאפ.</p>
+    <ol class="chapters">${chapters}</ol>
+    <div class="actions">${actions}</div>
+    <p class="fine">בערך 7 דקות · התשובות נשמרות בדפדפן הזה עד השליחה</p>`;
+}
+
+function fieldHTML(q){
+  const v = S.a[q.id];
+  const lab = 'aria-labelledby="qt"';
+  switch (q.type){
+    case 'text':
+      return `<input class="line" id="f-${q.id}" type="text" data-bind="${q.id}" value="${esc(v)}" placeholder="${esc(q.ph || '')}" autocomplete="${q.ac || 'off'}" ${q.required ? 'aria-required="true"' : ''} ${lab}>`;
+    case 'number':
+      return `<div class="unit"><input class="line" id="f-${q.id}" type="text" inputmode="numeric" maxlength="3" data-bind="${q.id}" data-num="1" value="${esc(v)}" placeholder="${esc(q.ph)}" ${lab}><span>${q.unit}</span></div>`;
+    case 'area':
+      return `<textarea class="box" id="f-${q.id}" data-bind="${q.id}" rows="5" placeholder="${esc(q.ph || '')}" ${lab}>${esc(v)}</textarea>`;
+    case 'sizes': {
+      const o = v || {};
+      return `<div class="sizes">${q.fields.map(f => `<label class="size" for="f-${q.id}-${f.k}"><span>${f.l}</span><input class="line sm" id="f-${q.id}-${f.k}" type="text" data-bind="${q.id}" data-k="${f.k}" value="${esc(o[f.k])}" placeholder="${esc(f.ph)}"></label>`).join('')}</div>`;
+    }
+    case 'single':
+      return `<div class="opts" role="group" ${lab}>${q.o.map((o, k) => `<button type="button" class="opt" data-act="pick" data-k="${k}" aria-pressed="${v === o}"><span class="ring" aria-hidden="true"></span><span>${esc(o)}</span></button>`).join('')}</div>`;
+    case 'multi': {
+      const a = v || [];
+      return `<div class="chips" role="group" ${lab}>${q.o.map((o, k) => `<button type="button" class="chip" data-act="pick" data-k="${k}" aria-pressed="${a.includes(o)}">${esc(o)}</button>`).join('')}</div>`;
+    }
+    case 'styles': {
+      const a = v || [];
+      return `<div class="cards" role="group" ${lab}>${STYLES.map((s, k) => `
+        <button type="button" class="card" data-act="pick" data-k="${k}" aria-pressed="${a.includes(s.n)}">
+          <span class="pal" aria-hidden="true">${s.c.map(c => `<span style="background:${c}"></span>`).join('')}</span>
+          <b>${esc(s.n)}</b><small>${esc(s.d)}</small>
+          <span class="tick" aria-hidden="true">✓</span>
+        </button>`).join('')}</div>`;
+    }
+    case 'colors': {
+      const a = v || [];
+      return `<div class="swatches" role="group" ${lab}>${COLORS.map((c, k) => `<button type="button" class="sw" data-act="pick" data-k="${k}" aria-pressed="${a.includes(c.n)}"><span class="dot" style="--c:${c.c}" aria-hidden="true"></span>${esc(c.n)}</button>`).join('')}</div>`;
+    }
+    case 'scale':
+      return `<div class="scale" role="group" ${lab}>${[1,2,3,4,5].map((n, k) => `<button type="button" data-act="pick" data-k="${k}" aria-pressed="${v === n}" aria-label="${n}: ${q.words[k]}">${n}</button>`).join('')}</div>
+              <div class="scale-ends" aria-hidden="true"><span>${q.ends[0]}</span><span>איזון</span><span>${q.ends[1]}</span></div>`;
+  }
+  return '';
+}
+
+function questionHTML(q){
+  const isMulti = ['multi', 'styles', 'colors'].includes(q.type);
+  const hint = q.hint || (isMulti ? multiHint(q) : '');
+  const extra = q.extra ? `<label class="extra" for="f-${q.id}-x"><span>${q.extra}</span><input class="line sm" id="f-${q.id}-x" type="text" data-bind="${q.id}__x" value="${esc(S.a[q.id + '__x'])}"></label>` : '';
+  const prev = S.back ? '<span></span>' : `<button type="button" class="link" data-act="prev">→ הקודם</button>`;
+  return `
+    <div class="q-meta"><span><b>פרק ${secNo(q)}</b> · ${secOf(q).t}</span></div>
+    <p class="lead">${q.lead}</p>
+    <h2 id="qt" tabindex="-1">${q.q}</h2>
+    ${hint ? `<p class="hint" id="hint">${hint}</p>` : ''}
+    <div class="field">${fieldHTML(q)}${extra}</div>
+    <p class="err" id="err" role="alert" hidden></p>
+    <nav class="q-nav" aria-label="ניווט בשאלון">
+      ${prev}
+      <button type="button" class="btn primary" data-act="next" id="nextBtn">הבא ←</button>
+    </nav>`;
+}
+
+function summaryHTML(){
+  const name = String(S.a.name || '').trim();
+  const first = name.split(/\s+/)[0] || '';
+  const done = Q.filter(answered).length;
+  const url = waURL(buildMessage());
+  const num = WHATSAPP_NUMBER.replace(/\D/g, '');
+  const note = num
+    ? `ייפתח צ׳אט עם ההודעה מוכנה, ונשאר רק ללחוץ שליחה. המספר: <bdi dir="ltr">+${esc(num)}</bdi>`
+    : 'וואטסאפ ייפתח עם ההודעה מוכנה. בוחרים למי לשלוח ולוחצים שליחה.';
+  const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5 5.3 15A8 8 0 1 1 9 18.7z"/><path d="M9 10.5h6M9 13.5h4"/></svg>';
+  const secs = SECTIONS.map(sec => {
+    const rows = Q.map((q, idx) => ({q, idx})).filter(x => x.q.s === sec.id).map(({q, idx}) => {
+      const t = answerHTML(q);
+      return `<div class="row"><dt>${q.label}</dt><dd>${t || '<span class="none">לא נענה</span>'}</dd><button type="button" class="edit" data-act="edit" data-q="${idx}" aria-label="עריכה: ${q.label}">עריכה</button></div>`;
+    }).join('');
+    return `<section class="sum-sec"><h3>${sec.t}</h3><dl>${rows}</dl></section>`;
+  }).join('');
+  return `
+    <p class="eyebrow">השאלון הושלם</p>
+    <h1>תודה${first ? ', <em>' + esc(first) + '</em>' : ''}</h1>
+    <p class="sub">נענו ${done} מתוך ${Q.length} שאלות. אפשר לתקן כל תשובה לפני השליחה.</p>
+    <div class="send">
+      <div class="send-row">
+        <a class="wa" href="${esc(url)}" target="_blank" rel="noopener">${icon}שליחת התשובות בוואטסאפ</a>
+        <button type="button" class="btn ghost" data-act="copy">העתקת התשובות</button>
+      </div>
+      <p class="send-note">${note}</p>
+      <p class="send-note">לא נפתח? מעתיקים את התשובות ומדביקים בצ׳אט.</p>
+      <textarea id="copybox" readonly hidden aria-label="התשובות כטקסט"></textarea>
+      <p class="ok" id="copied" role="status"></p>
+    </div>
+    ${secs}
+    <div class="end">
+      <a class="wa" href="${esc(url)}" target="_blank" rel="noopener">${icon}שליחה בוואטסאפ</a>
+      <button type="button" class="link" data-act="restart">מילוי מחדש</button>
+    </div>`;
+}
+
+/* ---------- render + state ---------- */
+function updateTop(){
+  const pos = S.i < 0 ? 0 : S.i >= Q.length ? Q.length : S.i + 1;
+  const pct = pos / Q.length * 100;
+  $('#tapeOn').style.clipPath = `inset(0 0 0 ${100 - pct}%)`;
+  $('#tape').setAttribute('aria-valuenow', pos);
+  $('#count').textContent = S.i < 0 ? `${Q.length} שאלות · ${SECTIONS.length} פרקים` : S.i >= Q.length ? 'השאלון הושלם' : `שאלה ${S.i + 1} מתוך ${Q.length}`;
+}
+
+function render(anim = true){
+  let html;
+  if (S.i < 0) html = welcomeHTML();
+  else if (S.i >= Q.length) html = summaryHTML();
+  else html = questionHTML(Q[S.i]);
+  stage.innerHTML = `<div class="screen${anim ? ' enter' : ''}">${html}</div>`;
+  updateTop();
+  if (S.i >= 0 && S.i < Q.length){ refreshQ(); focusQ(anim); }
+  save();
+}
+
+function focusQ(anim){
+  if (!anim) return;
+  const q = Q[S.i];
+  const fine = window.matchMedia && matchMedia('(pointer: fine)').matches;
+  const input = stage.querySelector('input.line, textarea');
+  if (fine && input && ['text', 'number', 'area', 'sizes'].includes(q.type)) input.focus({preventScroll:true});
+  else { const h = $('#qt'); if (h) h.focus({preventScroll:true}); }
+}
+
+function refreshQ(){
+  const q = Q[S.i]; const v = S.a[q.id];
+  const L = list(q);
+  stage.querySelectorAll('[data-act="pick"]').forEach(b => {
+    const k = +b.dataset.k;
+    const on = q.type === 'single' ? v === q.o[k] : q.type === 'scale' ? v === k + 1 : (v || []).includes(L[k]);
+    b.setAttribute('aria-pressed', on);
+  });
+  const hint = $('#hint');
+  if (hint && q.max){ hint.textContent = `נבחרו ${(v || []).length} מתוך ${q.max}`; hint.classList.remove('warn'); }
+  const nb = $('#nextBtn');
+  if (nb){
+    const has = answered(q) || String(S.a[q.id + '__x'] || '').trim();
+    nb.textContent = S.back ? 'חזרה לסיכום' : S.i === Q.length - 1 ? 'לסיכום ←' : (has || q.required) ? 'הבא ←' : 'דילוג ←';
+  }
+}
+
+function go(i){
+  clearTimeout(advT);
+  S.i = Math.max(-1, Math.min(Q.length, i));
+  if (S.i >= 0) S.far = Math.max(S.far || 0, S.i);
+  render();
+  window.scrollTo(0, 0);
+}
+
+function next(){
+  clearTimeout(advT);
+  const q = Q[S.i];
+  if (q && q.required && !answered(q)){
+    const e = $('#err'); e.textContent = q.err; e.hidden = false;
+    const inp = $('#f-' + q.id); if (inp) inp.focus();
+    return;
+  }
+  if (S.back){ S.back = false; go(Q.length); return; }
+  go(S.i + 1);
+}
+function prev(){ go(S.i - 1); }
+
+function pick(k){
+  const q = Q[S.i];
+  if (q.type === 'single' || q.type === 'scale'){
+    const o = q.type === 'scale' ? k + 1 : q.o[k];
+    const was = S.a[q.id] === o;
+    if (was) delete S.a[q.id]; else S.a[q.id] = o;
+    refreshQ(); save();
+    clearTimeout(advT);
+    if (!was && !q.extra) advT = setTimeout(next, 340);
+    return;
+  }
+  const o = list(q)[k];
+  let a = (S.a[q.id] || []).slice();
+  if (a.includes(o)) a = a.filter(x => x !== o);
+  else if (q.none && o === q.none) a = [o];
+  else {
+    a = a.filter(x => x !== q.none);
+    if (q.max && a.length >= q.max){
+      const h = $('#hint'); if (h){ h.textContent = `אפשר לבחור עד ${q.max}. בטלו בחירה כדי להחליף.`; h.classList.add('warn'); }
+      return;
+    }
+    a.push(o);
+  }
+  S.a[q.id] = a;
+  refreshQ(); save();
+}
+
+function armOrDo(b, fn){
+  if (b.dataset.armed){ fn(); return; }
+  const old = b.textContent;
+  b.dataset.armed = '1';
+  b.textContent = 'בטוחים? כל התשובות יימחקו. לחצו שוב';
+  setTimeout(() => { if (b.isConnected){ delete b.dataset.armed; b.textContent = old; } }, 4000);
+}
+
+function copyMsg(){
+  const msg = buildMessage();
+  const status = $('#copied');
+  const fallback = () => {
+    const box = $('#copybox'); box.value = msg; box.hidden = false; box.focus(); box.select();
+    status.textContent = 'סמנו את הטקסט בתיבה, העתיקו והדביקו בצ׳אט.';
+  };
+  try {
+    navigator.clipboard.writeText(msg).then(
+      () => { status.textContent = 'התשובות הועתקו. אפשר להדביק בצ׳אט.'; },
+      fallback
+    );
+  } catch(e){ fallback(); }
+}
+
+stage.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'start') go(0);
+  else if (act === 'resume') go(Math.min(S.far || 0, Q.length));
+  else if (act === 'restart') armOrDo(b, () => { S = {i:-1, a:{}, back:false, far:0}; go(0); });
+  else if (act === 'next') next();
+  else if (act === 'prev') prev();
+  else if (act === 'pick') pick(+b.dataset.k);
+  else if (act === 'edit'){ S.back = true; go(+b.dataset.q); }
+  else if (act === 'copy') copyMsg();
+});
+
+stage.addEventListener('input', e => {
+  const el = e.target; const key = el.dataset.bind; if (!key) return;
+  if (el.dataset.k) S.a[key] = Object.assign({}, S.a[key], {[el.dataset.k]: el.value});
+  else if (el.dataset.num){ el.value = el.value.replace(/\D/g, ''); S.a[key] = el.value; }
+  else S.a[key] = el.value;
+  const err = $('#err'); if (err) err.hidden = true;
+  refreshQ(); save();
+});
+
+stage.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.isComposing && e.target.matches('input')){ e.preventDefault(); next(); }
+});
+
+function start(data){
+  let st = data && data.S;
+  const fromHot = !!st;
+  if (!st){ try { st = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch(e){ st = null; } }
+  if (st && typeof st === 'object' && st.a && typeof st.a === 'object') S = Object.assign({i:-1, a:{}, back:false, far:0}, st);
+  if (!fromHot){ S.i = -1; S.back = false; }
+  render(false);
+}
+
+window.claude?.hot?.snapshot?.(() => ({S}));
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
